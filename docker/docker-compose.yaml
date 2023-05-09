@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  hubla-back:
+    image: hubla-dev-env/backend:latest
+    container_name: hubla-back
+    tty: true
+    command:
+      - /entrypoint.sh
+    volumes:
+      - ../backend:/app
+      - ../common-types:/common-types
+    ports:
+      - "4000:4000"
+    networks:
+      - hubla-network
+
+  hubla-front:
+    image: hubla-dev-env/front:latest
+    container_name: hubla-front
+    command:
+      - /entrypoint.sh
+    volumes:
+      - ../frontend:/app
+      - ../common-types:/common-types
+    ports:
+      - 3000:3000
+    networks:
+      - hubla-network
+
+  hubla-mysql:
+    image: mysql:8.0.23
+    container_name: hubla-mysql
+    command: --default-authentication-plugin=mysql_native_password --sql_mode="" --init-file /data/application/init.sql
+    volumes:
+      - ../db/mysql-data:/var/lib/mysql
+      - ../db/init.sql:/data/application/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - 33061:3306
+    networks:
+      - hubla-network
+
+networks:
+  hubla-network:
+    driver: bridge
+
+volumes:
+  db:
+    driver: local

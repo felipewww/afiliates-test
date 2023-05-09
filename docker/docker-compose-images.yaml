@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  hubla-img-back:
+    build:
+      context: ../backend
+      dockerfile: _docker/Dockerfile
+    image: hubla-dev-env/backend:latest
+
+  hubla-img-front:
+    build:
+      context: ../frontend
+      dockerfile: _docker/Dockerfile
+    image: hubla-dev-env/front:latest
