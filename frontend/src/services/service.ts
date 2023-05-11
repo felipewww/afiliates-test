@@ -53,6 +53,19 @@ export abstract class Service {
             host
         );
     }
+    
+    public async postFile(file: File) {
+        let host = this.host();
+        
+        let formData = new FormData();
+        formData.append("file", file);
+        
+        return this.httpClient.post(host, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+    }
 
     public post<T>(data: T) {
         let host = this.host();

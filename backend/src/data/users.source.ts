@@ -12,7 +12,7 @@ export class UsersSource extends BaseSource {
     // @ts-ignore
     async get(where: { [key: string]: any }): Promise<Array<IUserModel>> {
         
-        // todo - ler do banco
+        //todo - ler do banco, esta função nao ficará aqui. apeans para mock e testes iniciais.
         
         return Promise.resolve([{
             id: 1,

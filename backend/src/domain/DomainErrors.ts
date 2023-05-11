@@ -4,7 +4,7 @@ export class NotAuthorized extends DomainError {
     constructor() {
         super();
         
-        this.message = "Actions ins't authorized"
+        this.message = "Action isn't authorized"
     }
 }
 
