@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import {ConfigModule} from "@nestjs/config";
-import { TokenService } from './password-validator/token.service';
+import { TokenProvider } from '@/infra/tokenProvider/token.provider';
 
 @Module({
     imports: [
@@ -9,7 +9,7 @@ import { TokenService } from './password-validator/token.service';
         }),
     ],
     providers: [
-        TokenService
+        TokenProvider
     ]
 })
 export class InfraModule {}

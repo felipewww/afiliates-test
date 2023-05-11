@@ -3,7 +3,7 @@ import {ITokenPayload} from "common-types";
 import * as process from "process";
 
 //todo - trocar service por PROVIDER
-export class TokenService {
+export class TokenProvider {
     validate(token: string) {
         return jwt.verify(token, process.env.JWT_SECRET)
     }

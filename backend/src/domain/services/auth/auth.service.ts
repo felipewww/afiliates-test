@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {UsersRepo} from "@/domain/repositories/Users.repo";
 import {InvalidPassword, NotAuthorized} from "@/domain/DomainErrors";
-import {TokenService} from "@/infra/password-validator/token.service";
+import {TokenProvider} from "@/infra/tokenProvider/token.provider";
 import {BaseService} from "@/domain/base-service";
 
 export interface AuthServiceSO {
@@ -13,7 +13,7 @@ export interface AuthServiceSO {
 export class AuthService extends BaseService<AuthServiceSO, string> {
     constructor(
         private repo: UsersRepo,
-        private tokenService: TokenService
+        private tokenService: TokenProvider
     ) {
         super()
     }

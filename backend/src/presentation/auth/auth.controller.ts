@@ -1,6 +1,6 @@
 import {Controller, Post, Body, Res, HttpStatus} from '@nestjs/common';
 import {ILoginViewModel} from "common-types";
-import {AuthService, AuthServiceSO} from "@/domain/auth/auth.service";
+import {AuthService, AuthServiceSO} from "@/domain/services/auth/auth.service";
 import {Response} from "express";
 import {ResponseAdapter} from "@/presentation/response-adapter";
 
