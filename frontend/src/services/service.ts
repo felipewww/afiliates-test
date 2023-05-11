@@ -1,4 +1,4 @@
-import type {AxiosInstance} from "axios";
+import type {AxiosInstance, AxiosRequestHeaders} from "axios";
 import axios from "axios";
 
 export abstract class Service {
@@ -7,9 +7,26 @@ export abstract class Service {
 
     protected httpClient: AxiosInstance;
 
+    public headers: AxiosRequestHeaders;
+
     constructor() {
         this.httpClient = axios.create()
+
+        this.httpClient.interceptors.request.use((config) => {
+
+            if (this.headers) {
+                config.headers = this.headers;
+            }
+
+            return config
+        });
     }
+
+    // addHeader(key: string, value: string) {
+    //     if (!this.headers) {
+    //         this.headers = {}
+    //     }
+    // }
 
     protected host(
         queryStringObject?: { [key: string]: any })

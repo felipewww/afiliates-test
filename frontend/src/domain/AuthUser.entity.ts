@@ -3,11 +3,7 @@
 import {AuthService} from "@/services/auth.service";
 import * as jwt from "jsonwebtoken";
 import Cookies from 'js-cookie'
-
-export interface ITokenPayload {
-    id: number,
-    username: string
-}
+import {ITokenPayload} from "common-types";
 
 export class AuthUserEntity {
 

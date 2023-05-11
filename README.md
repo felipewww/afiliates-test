@@ -9,6 +9,7 @@ copiar .env.example apra .env do backend
 -[ ] Modelar db
 -[ ] autenticação jwt
 -[ ] criar endpoint envio de arquivo, salvar arquivo localmente, executar e deletar pós execução
+-[ ] inserir usuarios no banco para fazer login via init.sql
 -[ ] validar swagger
 -[ ] revisar readme
 -[ ] revisar common types
