@@ -1,4 +1,5 @@
 import {BaseSource} from "@/data/base.source";
+import {UserEntity} from "@/domain/entities/User.entity";
 
 export interface IUserModel {
     id: number
