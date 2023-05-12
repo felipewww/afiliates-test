@@ -14,10 +14,10 @@ export interface TransactionsModel {
     course_id: number,
     customer_id: number,
     upload_id: number,
-    credit_sale_creator: number
-    credit_commission_received: number
-    credit_sale_affiliate: number
-    debit_commission_paid: number
+    // credit_sale_creator: number
+    // credit_commission_received: number
+    // credit_sale_affiliate: number
+    // debit_commission_paid: number
     current_credits: number
     created_at: string
 }
