@@ -1,5 +1,5 @@
-import {ETransactionType} from "@/domain/services/upload/upload.service";
 import {ICourseModel} from "@/data/courses.source";
+import {ETransactionType} from "@/data/transactions.source";
 
 export class TransactionEntity {
     public currentCredits: number = 0

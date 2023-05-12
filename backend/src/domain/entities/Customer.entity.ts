@@ -3,7 +3,7 @@ export interface ICustomer {
     name: string
 }
 
-export class CustomerEntity implements ICustomer {
+export class CustomerEntity {
     constructor(
         public id: number,
         public name: string

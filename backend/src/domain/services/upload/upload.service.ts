@@ -6,13 +6,9 @@ import * as util from "util";
 import {TransactionEntity} from "@/domain/entities/Transaction.entity";
 import {CustomerEntity, ICustomer} from "@/domain/entities/Customer.entity";
 import {CustomerTransactionsManager} from "@/domain/entities/CustomerTransactionsManager";
-
-export enum ETransactionType {
-    SALE_CREATOR = 1,
-    SALE_AFFILIATE,//should not register credits change, just save this register in database
-    COMMISSION_PAID,
-    COMMISSION_RECEIVED
-}
+import {UploadsSource} from "@/data/uploads.source";
+import {ETransactionType} from "@/data/transactions.source";
+import {TransactionsRepo} from "@/domain/repositories/Transactions.repo";
 
 interface ILineParsed {
     type: ETransactionType,
@@ -23,8 +19,16 @@ interface ILineParsed {
     customerName: string
 }
 
+// todo - não permitir arquivo se:
+// afiliado VENDEU e não recebeu comissão
+
+export interface UploadServiceSO {
+    content: string,
+    filename: string
+}
+
 @Injectable()
-export class UploadService extends BaseService<string, any>{
+export class UploadService extends BaseService<UploadServiceSO, any>{
     
     private courses: { [key: string]: ICourseModel } = {}
     
@@ -34,18 +38,20 @@ export class UploadService extends BaseService<string, any>{
     constructor(
         private customersSource: CustomersSource,
         private coursesSource: CoursesSource,
+        private uploadsSource: UploadsSource,
+        private transactionsRepo: TransactionsRepo
     ) {
         super();
     }
     
-    async handle(so?: string): Promise<any> {
+    async handle(so: UploadServiceSO): Promise<any> {
         
-        const lines = so.split("\n")
+        const lines = so.content.split("\n")
         
         for (let i in lines) {
             let line = lines[i]
             
-            // ignorar linhas em branco
+            // ignore blank lines
             if (line === '') {
                 continue;
             }
@@ -73,16 +79,43 @@ export class UploadService extends BaseService<string, any>{
                 type,
                 this.courses[product],
                 priceConverted,
-                new Date(date)
+                date
             ))
-            
-            // todo - não permitir arquivo se:
-            // afiliado VENDEU e não recebeu comissão
         }
         
-        await this.associateDbIntoSellers()
+        try{
+            await this.associateDbIntoSellers()
+        } catch (e) {
+            // todo - tratar e repassar erro de banco de dados.
+            console.log('ops!!!!!!!!!!')
+            console.log(e)
+        }
         
-        console.log(util.inspect(this.customerTransactionsIndex, {showHidden: false, depth: null, colors: true}))
+        try {
+            // todo - colocar transactions nas queries
+            
+            const insertResult = await this.uploadsSource.create({
+                filename: so.filename,
+                datetime: new Date().toISOString()
+            })
+            
+            await this.transactionsRepo.save(
+                this.customerTransactionsIndex,
+                insertResult.raw.insertId
+            )
+            
+        } catch (e) {
+            // todo - tratar e repassar erro de banco de dados.
+            console.log('ops!!!!!!!!!!')
+            console.log(e)
+        }
+        
+        // console.log(util.inspect(this.customerTransactionsIndex, {showHidden: false, depth: null, colors: true}))
+        
+        for (let k of Object.keys(this.customerTransactionsIndex)) {
+            const manager = this.customerTransactionsIndex[k]
+            // manager
+        }
         
         return Promise.resolve(undefined);
     }
@@ -127,14 +160,18 @@ export class UploadService extends BaseService<string, any>{
     * This method finds users and courses id's by sent names (extract from file), then fill ids com database into current object.
     * */
     private async associateDbIntoSellers() {
-        await this.customersSource.createByUsername(Object.keys(this.customerTransactionsIndex))
-        const customersFromDB: Array<ICustomer> = await this.customersSource.getByUsername(Object.keys(this.customerTransactionsIndex))
         
-        await this.coursesSource.createByTitle(Object.keys(this.courses))
-        const coursesFromDB: Array<ICourseModel> = await this.coursesSource.getByTitle(Object.keys(this.courses))
+        const customersNames = Object.keys(this.customerTransactionsIndex)
+        await this.customersSource.createByUsername(customersNames)
+        const customersFromDB: Array<ICustomer> = await this.customersSource.getByUsername(customersNames)
+        
+        const coursesTitles = Object.keys(this.courses);
+        await this.coursesSource.createByTitle(coursesTitles)
+        const coursesFromDB: Array<ICourseModel> = await this.coursesSource.getByTitle(coursesTitles)
         
         for (let customerRow of customersFromDB) {
-            this.customerTransactionsIndex[customerRow.name].customer.id = customerRow.id
+            let customerTransactionsManager = this.getCustomerTransactionsManager(customerRow.name)
+            customerTransactionsManager.customer.id = customerRow.id
         }
         
         for (let courseRow of coursesFromDB) {

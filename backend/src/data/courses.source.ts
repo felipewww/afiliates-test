@@ -24,9 +24,6 @@ export class CoursesSource extends BaseSource {
     }
     
     async getByTitle(titles: Array<string>) {
-        console.log('findinf courses...................................')
-        console.log(titles)
-        
         const query = this.db
             .select('*')
             .from(this.table, 'a')
