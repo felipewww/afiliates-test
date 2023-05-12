@@ -2,7 +2,7 @@ import {Module} from '@nestjs/common';
 import {AuthService} from './auth.service';
 import {UsersSource} from "@/data/users.source";
 import {UsersRepo} from "@/domain/repositories/Users.repo";
-import {TokenProvider} from "@/infra/tokenProvider/token.provider";
+import {TokenProvider} from "@/infra/TokenProvider/Token.provider";
 
 @Module({
     imports: [

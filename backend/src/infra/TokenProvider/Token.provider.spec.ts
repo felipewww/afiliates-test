@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TokenProvider } from './token.provider';
+import { TokenProvider } from './Token.provider';
 
 describe('PasswordValidatorService', () => {
   let service: TokenProvider;

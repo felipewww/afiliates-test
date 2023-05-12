@@ -1,4 +1,4 @@
-import {UsersSource} from "@/data/users.source";
+import {IUserModel, UsersSource} from "@/data/users.source";
 import {UserEntity} from "@/domain/entities/User.entity";
 import {Injectable} from "@nestjs/common";
 
@@ -12,7 +12,7 @@ export class UsersRepo {
     async getByUsername(username: string): Promise<{ entity: UserEntity, dbPwd: string }> {
         let entity, dbPwd;
         
-        const sourceResult = await this.source.get({username})
+        const sourceResult = await this.source.get<IUserModel>({username})
         
         if (sourceResult.length) {
             entity = new UserEntity(

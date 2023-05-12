@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {UsersRepo} from "@/domain/repositories/Users.repo";
 import {InvalidPassword, NotAuthorized} from "@/domain/DomainErrors";
-import {TokenProvider} from "@/infra/tokenProvider/token.provider";
+import {TokenProvider} from "@/infra/TokenProvider/Token.provider";
 import {BaseService} from "@/domain/base-service";
+import {PasswordProvider} from "@/infra/PasswordProvider/Password.provider";
 
 export interface AuthServiceSO {
     username: string,
@@ -25,8 +26,7 @@ export class AuthService extends BaseService<AuthServiceSO, string> {
             throw new NotAuthorized()
         }
         
-        
-        this.validatePassword(serviceObject.password,dbPwd)
+        await this.validatePassword(serviceObject.password, dbPwd)
         
         return this.tokenService.create({
             id: entity.id,
@@ -34,11 +34,11 @@ export class AuthService extends BaseService<AuthServiceSO, string> {
         })
     }
     
-    private validatePassword(sentPwd: string, dbPwd: string) {
-        if (sentPwd === dbPwd) {
-            return true
-        }
+    private async validatePassword(sentPwd: string, dbPwd: string) {
+        const pwdValidate = await PasswordProvider.verify(sentPwd, dbPwd)
         
-        throw new InvalidPassword()
+        if (!pwdValidate) {
+            throw new InvalidPassword()
+        }
     }
 }
