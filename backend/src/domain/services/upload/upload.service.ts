@@ -91,6 +91,8 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
             console.log(e)
         }
         
+        let uploadId: number
+        
         try {
             // todo - colocar transactions nas queries
             
@@ -99,10 +101,17 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
                 datetime: new Date().toISOString()
             })
             
-            await this.transactionsRepo.save(
+            const uploadRes = await this.transactionsRepo.save(
                 this.compoundsIndexed,
                 insertResult.raw.insertId
             )
+            
+            uploadId = uploadRes.raw.insertId;
+            
+            for (let key of Object.keys(this.compoundsIndexed)) {
+                let customer = this.compoundsIndexed[key].customer;
+                await this.customersSource.changeCurrentCredits(customer.id, customer.currentCredits)
+            }
             
         } catch (e) {
             // todo - tratar e repassar erro de banco de dados.
@@ -110,7 +119,7 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
             console.log(e)
         }
         
-        return Promise.resolve(undefined);
+        return Promise.resolve(uploadId);
     }
     
     private parseLine(line: string): ILineParsed {
@@ -149,7 +158,7 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
     }
     
     /*
-    * Users and courses have no id in file estructure.
+    * Users and courses have no id in file structure.
     * This method finds users and courses id's by sent names (extract from file), then fill ids com database into current object.
     * */
     private async associateDbIntoSellers() {

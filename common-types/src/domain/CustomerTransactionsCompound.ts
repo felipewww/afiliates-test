@@ -1,6 +1,7 @@
 export interface ICustomer {
     id: number,
     name: string
+    currentCredits: number
 }
 
 export enum ETransactionType {

@@ -3,14 +3,14 @@ import {CustomersService} from "@/domain/services/customers/customers.service";
 import {Response} from "express";
 import {ResponseAdapter} from "@/presentation/response-adapter";
 
-@Controller('customer')
+@Controller('customers')
 export class CustomerController {
     constructor(
         private customersService: CustomersService
     ) {
     }
     
-    @Get('customers')
+    @Get()
     async customers(
         @Res() res: Response
     ) {

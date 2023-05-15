@@ -5,7 +5,8 @@ import Link from "next/link";
 import {useState} from "react";
 import {UploadService} from "@/services/upload.service";
 import {TransactionsService} from "@/services/transactions.service";
-import {ITransaction} from "../../../../../common-types/src/domain/CustomerTransactionsCompound";
+import {ICustomer, ITransaction} from "../../../../../common-types/src/domain/CustomerTransactionsCompound";
+import {CustomersService} from "@/services/customers.service";
 
 export default () => {
     const [file, setFile] = useState<File>();
@@ -25,6 +26,12 @@ export default () => {
         console.log(res2)
     }
     
+    const readCustomers = async () => {
+        const service = new CustomersService();
+        const res2: {data: Array<ICustomer>} = await service.get()
+        console.log(res2)
+    }
+    
     return (
         <TemplateAdmin>
             <input type='file' onChange={(e) => setFile(e.target.files[0])}/>
@@ -38,6 +45,7 @@ export default () => {
             <hr />
             
             <button type="button" onClick={readLastTrans}>READ LAST TRANS</button>
+            <button type="button" onClick={readCustomers}>READ CUSTOMERS</button>
         </TemplateAdmin>
     )
 }

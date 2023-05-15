@@ -11,7 +11,7 @@ export class CustomersSource extends BaseSource {
     async createByUsername(data: Array<string>) {
         
         const toInsert = data.map(name => {
-            return { id: null, name }
+            return { id: null, name, current_credits: 0 }
         })
         
         const query = this.db
@@ -31,5 +31,13 @@ export class CustomersSource extends BaseSource {
             .setParameter('usernames', usernames)
         
         return query.execute()
+    }
+    
+    async changeCurrentCredits(id: number, current_credits: number) {
+        return this.db
+            .update('customers')
+            .set({current_credits})
+            .where({id})
+            .execute()
     }
 }

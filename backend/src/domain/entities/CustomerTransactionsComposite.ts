@@ -47,6 +47,8 @@ export class CustomerTransactionsComposite {
         const lastTransactionCredits = this.getLastTransactionCredits();
         
         transaction.currentCredits = eval(`${lastTransactionCredits} ${operator[transaction.type]} ${transaction.price}`);
+        
+        this.customer.currentCredits = transaction.currentCredits;
     }
     
     private getLastTransactionCredits() {
