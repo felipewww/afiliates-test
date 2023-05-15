@@ -33,7 +33,7 @@ export class TransactionsRepo {
                     customer_id: composite.customer.id,
                     upload_id: uploadId,
                     current_credits: t.currentCredits,
-                    created_at: t.date.toISOString(),
+                    created_at: t.dateTime.toISOString()
                 })
             }
         }
@@ -54,8 +54,10 @@ export class TransactionsRepo {
                     title: row.course_title
                 },
                 row.price,
-                new Date(row.created_at)
+                row.created_at
             )
+            
+            transaction.id = row.id
             
             transaction.customer = new CustomerEntity(row.customer_id, row.customer_name);
             

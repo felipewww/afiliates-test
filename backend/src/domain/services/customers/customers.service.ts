@@ -11,8 +11,12 @@ export class CustomersService extends BaseService<any, any>{
         super();
     }
     
-    async handle(so: any): Promise<any> {
-        const res = await this.customersSource.get<ICustomer>()
+    async handle(so: { id: number }): Promise<any> {
+        const res = await this.customersSource.get<ICustomer>(
+            {id: so.id},
+            'id, name, current_credits as currentCredits'
+        )
+        
         return Promise.resolve(res);
     }
     

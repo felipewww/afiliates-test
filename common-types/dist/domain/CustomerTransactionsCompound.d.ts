@@ -10,13 +10,14 @@ export declare enum ETransactionType {
     COMMISSION_RECEIVED = 4
 }
 export interface ITransaction {
+    id: number;
     type: ETransactionType;
     course: {
         id: number;
         title: string;
     };
     price: number;
-    date: Date;
+    date: string;
     customer: ICustomer;
 }
 export declare type TCustomerTransactionsCompounds = {

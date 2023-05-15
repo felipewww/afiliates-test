@@ -11,7 +11,7 @@ import {ETransactionType, ICustomer} from "common-types";
 
 interface ILineParsed {
     type: ETransactionType,
-    date: Date,
+    date: string,
     product: string
     price: number
     priceConverted: number,
@@ -134,7 +134,7 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
         
         return {
             type,
-            date: new Date(date),
+            date,
             product,
             price,
             priceConverted,

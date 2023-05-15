@@ -13,20 +13,21 @@ export abstract class BaseSource {
         return this.connection.createQueryBuilder()
     }
     
-    async get<T>(where?: { [key: string]: any }): Promise<Array<T>> {
+    async get<T>(
+        where?: { [key: string]: any },
+        cols?: string
+    ): Promise<Array<T>> {
         const query = this.db
-            .select('*')
+            .select((cols) ? cols : '*')
             .from(this.table, 'a')
         
-        return this.exec(query)
-        // if (where) {
-        //     query.where(where)
-        // }
-        //
-        // return query.execute();
+        return this.exec(query, where)
     }
     
-    async exec(query: SelectQueryBuilder<any>, where?: { [key: string]: any }) {
+    async exec(
+        query: SelectQueryBuilder<any>,
+        where?: { [key: string]: any }
+    ) {
         if (where) {
             query.where(where)
         }

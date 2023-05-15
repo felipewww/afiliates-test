@@ -15,7 +15,7 @@ export class TransactionsService extends BaseService<null, Array<ITransaction>> 
     
     async handle(so: any): Promise<Array<TransactionEntity>> {
         const transactions = await this.transactionsRepo.getAll();
-        
         return Promise.resolve(transactions);
+        // return Promise.resolve([]);
     }
 }
