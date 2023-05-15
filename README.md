@@ -1,16 +1,21 @@
-iniciar docker-compose-images com script sh
-docker-compose -f docker-compose-images.yaml build
+# App setup
 
-iniciar docker-compose com script sh
-docker-compose up
+## Build images locally
 
-copiar .env.example apra .env do backend
+- docker-compose -f docker-compose-images.yaml build
 
--[ ] Modelar db
--[ ] autenticação jwt
--[ ] criar endpoint envio de arquivo, salvar arquivo localmente, executar e deletar pós execução
--[ ] inserir usuarios no banco para fazer login via init.sql
+## Setup .env file
+- In backend folder, copy file ".env.example" as ".env". 
+
+## Run application
+- docker-compose up
+
+## Accessing application
+- In browser, access localhost:3000 ou /auth/login
+- username: hubla@test.com | password: secret
+
+
 -[ ] validar swagger
 -[ ] revisar readme
--[ ] revisar common types
+-[ ] unit tests backend
 -[ ] deletar e subir os containers novamente para garantir o funcionamento
