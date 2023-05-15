@@ -1,0 +1,9 @@
+.btnAction {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #02380f;
+    padding: 6px 21px;
+    background: #01702b;
+    border-radius: 0 5px 5px 0;
+}

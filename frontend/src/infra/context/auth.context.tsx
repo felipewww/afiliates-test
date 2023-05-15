@@ -9,7 +9,9 @@ export interface IAuthContext {
     authUserEntity?: AuthUserEntity
 }
 
-const AuthContext = createContext<IAuthContext>({})
+const AuthContext = createContext<IAuthContext>({
+    authUserEntity: new AuthUserEntity(null, null)
+})
 
 export function AuthProvider(props: any) {
     const [authUserEntity, setAuthEntity] = useState<AuthUserEntity>(

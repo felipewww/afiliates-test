@@ -8,8 +8,8 @@ export default (props: { transactions: Array<ITransaction>, selectCustomer: Func
     const renderTransactions = () => {
         return props.transactions.map(item => {
             return (
-                <tr key={item.id}>
-                    <td>{item.date}</td>
+                <tr key={item.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td className="px-6 py-4">{item.date}</td>
                     <td>{item.type}</td>
                     <td>{item.course.title}</td>
                     <td>{item.price}</td>

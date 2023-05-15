@@ -9,6 +9,7 @@ import {CustomersService} from "@/services/customers.service";
 import Transactions from "@/components/transactions.component";
 import CustomerInfoComponent from "@/components/customer-info.component";
 import If from "@/components/If";
+import css from './page.module.css'
 
 export default () => {
     
@@ -43,9 +44,16 @@ export default () => {
     return (
         <>
             <TemplateAdmin>
-                <input type='file' onChange={(e) => setFile(e.target.files[0])}/>
+                {/*<input type='file' onChange={(e) => setFile(e.target.files[0])}/>*/}
                 
-                <button onClick={handleUpload}>Upload</button>
+                <div style={ {position: "relative", width: '700px', margin: "0 auto" } }>
+                    <input
+                        className="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        onChange={(e) => setFile(e.target.files[0])}
+                        type="file" />
+                    
+                    <button className={css.btnAction} onClick={handleUpload}>Upload</button>
+                </div>
                 
                 {
                     customer ?

@@ -17,8 +17,7 @@ export default({children}: { children: React.ReactNode }) => {
     
     return (
         <AuthProvider>
-            <h1>Template Admin 2!</h1>
-            <div>{loggedUser}</div>
+            <div>Welcome {loggedUser},</div>
             <div>
                 {children}
             </div>
