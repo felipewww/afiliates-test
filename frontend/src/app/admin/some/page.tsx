@@ -2,15 +2,17 @@
 
 import TemplateAdmin from "@/components/TemplateAdmin";
 import Link from "next/link";
-import {useRef, useState} from "react";
+import {useState} from "react";
 import {UploadService} from "@/services/upload.service";
 import {TransactionsService} from "@/services/transactions.service";
 import {ICustomer, ITransaction} from "../../../../../common-types/src/domain/CustomerTransactionsCompound";
 import {CustomersService} from "@/services/customers.service";
 import Transactions from "@/components/transactions.component";
 import CustomerInfoComponent from "@/components/customer-info.component";
+import If from "@/components/If";
 
 export default () => {
+    
     const [file, setFile] = useState<File>();
     const [transactions, setTransactions] = useState<Array<ITransaction>>([])
     const [customer, setCustomer] = useState<ICustomer>(null)
@@ -37,23 +39,31 @@ export default () => {
     }
     
     return (
-        <TemplateAdmin>
-            <input type='file' onChange={(e) => setFile(e.target.files[0])}/>
-            
-            <button onClick={handleUpload}>Upload</button>
-            
-            <Link href={'/admin'}>
-                To Home
-            </Link>
-            
-            <hr />
-            
-            <Transactions transactions={transactions} selectCustomer={selectCustomer}></Transactions>
-            
-            <CustomerInfoComponent customer={customer}></CustomerInfoComponent>
-            
-            <button type="button" onClick={readLastTrans}>READ LAST TRANS</button>
-            
-        </TemplateAdmin>
+        <>
+            <TemplateAdmin>
+                <input type='file' onChange={(e) => setFile(e.target.files[0])}/>
+                
+                <button onClick={handleUpload}>Upload</button>
+                
+                <Link href={'/admin'}>
+                    To Home
+                </Link>
+                
+                <hr />
+                
+                <If cond={transactions.length}>
+                    <Transactions transactions={transactions} selectCustomer={selectCustomer}></Transactions>
+                </If>
+                
+                {
+                    customer ?
+                        <CustomerInfoComponent customer={customer}></CustomerInfoComponent>
+                        : null
+                }
+                
+                <button type="button" onClick={readLastTrans}>READ LAST TRANS</button>
+                
+            </TemplateAdmin>
+        </>
     )
 }

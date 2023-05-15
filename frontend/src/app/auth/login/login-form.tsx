@@ -1,7 +1,7 @@
 'use client'
 
 import {useState} from "react";
-import {useAuthContext} from "@/infra/context/auth.context";
+import {AuthUserEntity} from "@/domain/AuthUser.entity";
 
 export interface IProps {
     onSuccess: Function,
@@ -9,16 +9,17 @@ export interface IProps {
 }
 
 export default (props: IProps) => {
-
-    const ctx = useAuthContext();
-
+    
     let [username, setUsername] = useState('');
     let [password, setPassword] = useState('');
 
-    function login() {
-        ctx.authUserEntity.login(username, password)
+    async function loginFn() {
+        AuthUserEntity.login(username, password)
             .then(() => props.onSuccess())
-            .catch(() => props.onError())
+            .catch(err => {
+                console.log(err)
+                // todo - tratar erro de login
+            })
     }
 
     return (
@@ -61,7 +62,7 @@ export default (props: IProps) => {
                     </a>
                 </div>
                 <button type="button"
-                        onClick={login}
+                        onClick={loginFn}
                         className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                         style={ {backgroundColor: 'rgb(37 99 235)'} }
                 >

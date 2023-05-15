@@ -2,12 +2,9 @@
 
 import LoginForm from "@/app/auth/login/login-form";
 import {useRouter} from "next/navigation";
-import {useAuthContext} from "@/infra/context/auth.context";
 
 export default function LoginPage() {
-
-    const ctx = useAuthContext();
-    ctx.authUserEntity?.logout()
+    
     const router = useRouter()
 
     const loginError = (err: any) => {

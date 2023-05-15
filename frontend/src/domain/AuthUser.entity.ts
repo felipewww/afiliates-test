@@ -1,4 +1,4 @@
-'use client'
+// 'use client'
 
 import {AuthService} from "@/services/auth.service";
 import * as jwt from "jsonwebtoken";
@@ -22,21 +22,21 @@ export class AuthUserEntity {
         return this.Username
     }
 
-    async login(username: string, password: string) {
+    public static async login(username: string, password: string) {
         const service = new AuthService();
 
         try {
             const token = await service.login(username, password)
-            this.authenticate(token)
+            // this.authenticate(token)
 
             Cookies.set('token', token, {
                 expires: 7
             })
 
-            return true
+            return Promise.resolve(true)
         } catch (e) {
             // todo - tratar erro de login
-            return false;
+            return Promise.reject(e)
         }
     }
 
@@ -48,10 +48,12 @@ export class AuthUserEntity {
     }
 
     isLoggedIn() {
+        this.refreshLoginFromStorage();
+        
         return (!!this.Id);
     }
 
-    private authenticate(token: string) {
+    public authenticate(token: string) {
         const payload = jwt.decode(token) as ITokenPayload
 
         this.Id = payload.id;

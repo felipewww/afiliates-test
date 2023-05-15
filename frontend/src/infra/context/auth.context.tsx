@@ -1,39 +1,39 @@
-'use client';
+'use client'
 
-import {createContext, useContext, useState} from "react";
 import {AuthUserEntity} from "@/domain/AuthUser.entity";
-// import {useRouter} from "next/navigation";
-import { redirect } from 'next/navigation';
+import {createContext, useContext, useEffect, useState} from "react";
+import If from "@/components/If";
+import {redirect} from "next/navigation";
 
 export interface IAuthContext {
-    authUserEntity: AuthUserEntity
+    authUserEntity?: AuthUserEntity
 }
 
-const contextInit: IAuthContext = {
-    authUserEntity: new AuthUserEntity(null, null)
-}
-const AuthContext = createContext<IAuthContext>(contextInit)
+const AuthContext = createContext<IAuthContext>({})
 
 export function AuthProvider(props: any) {
-    const ctx = useAuthContext();
-
-    if (!ctx.authUserEntity || !ctx.authUserEntity.isLoggedIn()) {
-        // const router = useRouter();
-        return redirect('/auth/login')
-    }
-
+    const [authUserEntity, setAuthEntity] = useState<AuthUserEntity>(
+        new AuthUserEntity(null, null)
+    )
+    
+    useEffect(() => {
+        console.log('authUserEntity IN AUTH PROVIDER!')
+        console.log(authUserEntity)
+        
+        if (!authUserEntity.isLoggedIn()) {
+            return redirect('/auth/login')
+        }
+    })
+    
     return (
-        <AuthContext.Provider value={ contextInit }>
-            <div>
-                <div>id: {contextInit.authUserEntity.id}</div>
-                <div>username: {contextInit.authUserEntity.username}</div>
-            </div>
-            <br />
-            {props.children}
+        <AuthContext.Provider value={{authUserEntity}}>
+            <If cond={authUserEntity.isLoggedIn()}>
+                {props.children}
+            </If>
         </AuthContext.Provider>
-    );
+    )
 }
 
-export function useAuthContext() {
-    return useContext(AuthContext)
-}
+export default AuthContext;
+
+export const useAuthContext = () => useContext(AuthContext)
