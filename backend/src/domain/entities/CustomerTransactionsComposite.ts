@@ -1,7 +1,7 @@
 import {TransactionEntity} from "@/domain/entities/Transaction.entity";
 import {CustomerEntity} from "@/domain/entities/Customer.entity";
 import * as process from "process";
-import {ETransactionType} from "../../../../common-types";
+import {ETransactionType} from "common-types/dist/app";
 
 /**
  * Each Customer has many Transactions. The "CustomerTransactionsComposite" object
@@ -31,6 +31,8 @@ export class CustomerTransactionsComposite {
         ) {
             this.setCurrentCredits(transaction);
         }
+        
+        transaction.customer = this.customer
         
         this.Transactions.push(transaction)
     }

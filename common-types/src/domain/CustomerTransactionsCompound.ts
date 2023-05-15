@@ -18,6 +18,7 @@ export interface ITransaction {
     }
     price: number,
     date: Date
+    customer: ICustomer
 }
 
 export type TCustomerTransactionsCompounds = {

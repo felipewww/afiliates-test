@@ -5,6 +5,7 @@ import Link from "next/link";
 import {useState} from "react";
 import {UploadService} from "@/services/upload.service";
 import {TransactionsService} from "@/services/transactions.service";
+import {ITransaction} from "../../../../../common-types/src/domain/CustomerTransactionsCompound";
 
 export default () => {
     const [file, setFile] = useState<File>();
@@ -20,8 +21,8 @@ export default () => {
     
     const readLastTrans = async () => {
         const service = new TransactionsService();
-        const res = await service.get()
-        console.log(res)
+        const res2: {data: Array<ITransaction>} = await service.get()
+        console.log(res2)
     }
     
     return (

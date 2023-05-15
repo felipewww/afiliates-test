@@ -41,37 +41,27 @@ export class TransactionsRepo {
         return this.transactionsSource.save(dataModel)
     }
     
-    async getByUploadId(uploadId: number) {
-        const transactions = await this.transactionsSource.getAll(
-            uploadId
-        )
+    async getAll() {
+        const rows = await this.transactionsSource.getAll()
         
-        const compounds: { [key: number]: CustomerTransactionsComposite } = {}
+        const transactions: Array<TransactionEntity> = []
         
-        for (let row of transactions) {
-            let customerEntity;
-            
-            let composite = compounds[row.customer_id];
-            
-            if (!composite) {
-                customerEntity = new CustomerEntity(row.customer_id, row.customer_name);
-                composite = new CustomerTransactionsComposite(customerEntity)
-                compounds[row.customer_id] = composite
-            }
-            
-            composite.addTransaction(
-                new TransactionEntity(
-                    row.transaction_type_id,
-                    {
-                        id: row.course_id,
-                        title: row.customer_name
-                    },
-                    row.price,
-                    new Date(row.created_at)
-                )
+        for (let row of rows) {
+            let transaction = new TransactionEntity(
+                row.transaction_type_id,
+                {
+                    id: row.course_id,
+                    title: row.course_title
+                },
+                row.price,
+                new Date(row.created_at)
             )
+            
+            transaction.customer = new CustomerEntity(row.customer_id, row.customer_name);
+            
+            transactions.push(transaction)
         }
         
-        return compounds;
+        return transactions;
     }
 }

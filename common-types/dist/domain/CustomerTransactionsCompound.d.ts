@@ -16,6 +16,7 @@ export interface ITransaction {
     };
     price: number;
     date: Date;
+    customer: ICustomer;
 }
 export declare type TCustomerTransactionsCompounds = {
     Transactions: Array<ITransaction>;

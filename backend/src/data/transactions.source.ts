@@ -1,13 +1,6 @@
 import {BaseSource} from "@/data/base.source";
 import {ETransactionType} from 'common-types'
 
-// export enum ETransactionType {
-//     SALE_CREATOR = 1,
-//     SALE_AFFILIATE,//should not register credits change, just save this register in database
-//     COMMISSION_PAID,
-//     COMMISSION_RECEIVED
-// }
-
 export interface TransactionsModel {
     id: number,
     price: number,
@@ -36,13 +29,14 @@ export class TransactionsSource extends BaseSource {
         return query.execute();
     }
     
-    async getAll(uploadId: number): Promise<Array<TransactionFullModel>> {
+    async getAll(): Promise<Array<TransactionFullModel>> {
         const query = this.db
             .select(['T.*', 'C.name as customer_name', 'CO.title as course_title'])
             .from(this.table, 'T')
             .innerJoin('customers', 'C', 'C.id = T.customer_id')
             .innerJoin('courses', 'CO', 'CO.id = T.course_id')
+            .orderBy('T.created_at', 'DESC')
         
-        return super.exec(query, { upload_id: uploadId})
+        return super.exec(query)
     }
 }
