@@ -1,7 +1,8 @@
 import {ICourseModel} from "@/data/courses.source";
-import {ETransactionType} from "@/data/transactions.source";
+import {ETransactionType} from "../../../../common-types/src/domain/CustomerTransactionsCompound";
+import {ITransaction} from 'common-types'
 
-export class TransactionEntity {
+export class TransactionEntity implements ITransaction {
     public currentCredits: number = 0
     
     constructor(

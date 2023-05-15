@@ -1,5 +1,5 @@
 import {Inject} from "@nestjs/common";
-import {DataSource} from "typeorm";
+import {DataSource, SelectQueryBuilder} from "typeorm";
 
 export abstract class BaseSource {
     abstract table: string
@@ -18,10 +18,19 @@ export abstract class BaseSource {
             .select('*')
             .from(this.table, 'a')
         
+        return this.exec(query)
+        // if (where) {
+        //     query.where(where)
+        // }
+        //
+        // return query.execute();
+    }
+    
+    async exec(query: SelectQueryBuilder<any>, where?: { [key: string]: any }) {
         if (where) {
             query.where(where)
         }
         
-        return query.execute();
+        return query.execute()
     }
 }

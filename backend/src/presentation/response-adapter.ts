@@ -3,10 +3,16 @@ import {Response} from "express";
 import {DomainError} from "@/domain/DomainErrors";
 import {HttpStatus} from "@nestjs/common";
 
-export async function ResponseAdapter<Input, DTO>(service: BaseService<Input, any>, so: any, toDtoFn: Function, res: Response): Promise<Response<DTO>> {
+export async function ResponseAdapter<Input, DTO>(
+    service: BaseService<Input, any>,
+    res: Response,
+    so?: any,
+    toDtoFn?: Function): Promise<Response<DTO>>
+{
     try {
         const serviceRes = await service.handle(so)
-        const dto = toDtoFn(serviceRes) as DTO
+        
+        const dto = (toDtoFn) ? toDtoFn(serviceRes) as DTO : serviceRes;
         
         return res.json(dto)
     } catch (e) {

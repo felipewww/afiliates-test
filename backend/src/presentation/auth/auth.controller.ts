@@ -33,6 +33,6 @@ export class AuthController {
             }
         }
         
-        return ResponseAdapter<AuthServiceSO, ILoginDto>(this.authService, so, parseLoginResultDTO, res)
+        return ResponseAdapter<AuthServiceSO, ILoginDto>(this.authService, res, so, parseLoginResultDTO)
     }
 }

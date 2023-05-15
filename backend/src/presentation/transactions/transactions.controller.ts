@@ -10,19 +10,10 @@ export class TransactionsController {
     ) {
     }
 
-    @Get('transactions')
+    @Get('')
     async transactions(
         @Res() res: Response
     ) {
-        const toDto = () => {
-            return 'ok!'
-        }
-        
-        // const so: UploadServiceSO = {
-        //     content: file.buffer.toString(),
-        //     filename: file.originalname
-        // }
-        
-        return ResponseAdapter(this.transactionsService, null, toDto, res)
+        return ResponseAdapter(this.transactionsService, res)
     }
 }

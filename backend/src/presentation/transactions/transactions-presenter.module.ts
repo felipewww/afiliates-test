@@ -3,7 +3,9 @@ import {TransactionsController} from './transactions.controller';
 import {TransactionsModule} from "@/domain/services/transactions/transactions.module";
 
 @Module({
-    controllers: [TransactionsController],
+    controllers: [
+        TransactionsController
+    ],
     imports: [
         TransactionsModule
     ]

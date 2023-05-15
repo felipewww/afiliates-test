@@ -8,7 +8,7 @@ import {TransactionsRepo} from "@/domain/repositories/Transactions.repo";
 
 @Module({
     imports: [
-        TransactionsSource,
+    
     ],
     providers: [
         UploadService,

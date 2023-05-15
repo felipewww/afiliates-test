@@ -14,15 +14,6 @@ export class CustomerController {
     async customers(
         @Res() res: Response
     ) {
-        const toDto = () => {
-            return 'ok!'
-        }
-        
-        // const so: UploadServiceSO = {
-        //     content: file.buffer.toString(),
-        //     filename: file.originalname
-        // }
-        
-        return ResponseAdapter(this.customersService, null, toDto, res)
+        return ResponseAdapter(this.customersService, res)
     }
 }

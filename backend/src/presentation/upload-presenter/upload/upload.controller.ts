@@ -27,6 +27,6 @@ export class UploadController {
             filename: file.originalname
         }
         
-        return ResponseAdapter(this.service, so, toDto, res)
+        return ResponseAdapter(this.service, res, so, toDto)
     }
 }

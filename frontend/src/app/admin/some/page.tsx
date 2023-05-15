@@ -4,6 +4,7 @@ import TemplateAdmin from "@/components/TemplateAdmin";
 import Link from "next/link";
 import {useState} from "react";
 import {UploadService} from "@/services/upload.service";
+import {TransactionsService} from "@/services/transactions.service";
 
 export default () => {
     const [file, setFile] = useState<File>();
@@ -17,6 +18,12 @@ export default () => {
         service.upload(file)
     };
     
+    const readLastTrans = async () => {
+        const service = new TransactionsService();
+        const res = await service.get()
+        console.log(res)
+    }
+    
     return (
         <TemplateAdmin>
             <input type='file' onChange={(e) => setFile(e.target.files[0])}/>
@@ -26,6 +33,10 @@ export default () => {
             <Link href={'/admin'}>
                 To Home
             </Link>
+            
+            <hr />
+            
+            <button type="button" onClick={readLastTrans}>READ LAST TRANS</button>
         </TemplateAdmin>
     )
 }

@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 import {BaseService} from "@/domain/base-service";
 import {CustomersSource} from "@/data/customers.source";
 import {CoursesSource, ICourseModel} from "@/data/courses.source";
-import * as util from "util";
 import {TransactionEntity} from "@/domain/entities/Transaction.entity";
-import {CustomerEntity, ICustomer} from "@/domain/entities/Customer.entity";
-import {CustomerTransactionsManager} from "@/domain/entities/CustomerTransactionsManager";
+import {CustomerEntity} from "@/domain/entities/Customer.entity";
+import {CustomerTransactionsComposite} from "@/domain/entities/CustomerTransactionsComposite";
 import {UploadsSource} from "@/data/uploads.source";
-import {ETransactionType} from "@/data/transactions.source";
 import {TransactionsRepo} from "@/domain/repositories/Transactions.repo";
+import {ETransactionType, ICustomer} from "common-types";
 
 interface ILineParsed {
     type: ETransactionType,
@@ -32,14 +31,15 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
     
     private courses: { [key: string]: ICourseModel } = {}
     
-    // This object index customer transactions by "Customers Name"
-    private customerTransactionsIndex: { [key: string]: CustomerTransactionsManager } = {}
+    // Used to Index all Composites by CustomerName making easy to find Composite by CustomerName
+    private compoundsIndexed: { [key: string]: CustomerTransactionsComposite } = {}
     
     constructor(
         private customersSource: CustomersSource,
         private coursesSource: CoursesSource,
         private uploadsSource: UploadsSource,
-        private transactionsRepo: TransactionsRepo
+        private transactionsRepo: TransactionsRepo,
+        
     ) {
         super();
     }
@@ -65,7 +65,7 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
                 priceConverted,
             } = this.parseLine(line)
             
-            // Index courses by name, on the future these id's will be filled with real ids from database selection.
+            // Index the courses by name, in the future these id's will be filled with real ids from database selection.
             if (!this.courses[product]) {
                 this.courses[product] = {
                     id: null,
@@ -73,9 +73,9 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
                 }
             }
             
-            let customerTransactionsManager = this.getCustomerTransactionsManager(customerName)
+            let customerTransactionsComposite = this.getCustomerTransactionsComposite(customerName)
             
-            customerTransactionsManager.addTransaction(new TransactionEntity(
+            customerTransactionsComposite.addTransaction(new TransactionEntity(
                 type,
                 this.courses[product],
                 priceConverted,
@@ -100,7 +100,7 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
             })
             
             await this.transactionsRepo.save(
-                this.customerTransactionsIndex,
+                this.compoundsIndexed,
                 insertResult.raw.insertId
             )
             
@@ -108,13 +108,6 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
             // todo - tratar e repassar erro de banco de dados.
             console.log('ops!!!!!!!!!!')
             console.log(e)
-        }
-        
-        // console.log(util.inspect(this.customerTransactionsIndex, {showHidden: false, depth: null, colors: true}))
-        
-        for (let k of Object.keys(this.customerTransactionsIndex)) {
-            const manager = this.customerTransactionsIndex[k]
-            // manager
         }
         
         return Promise.resolve(undefined);
@@ -140,19 +133,19 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
         }
     }
     
-    private getCustomerTransactionsManager(customerName: string) {
-        let customerTransactionsManager = this.customerTransactionsIndex[customerName];
+    private getCustomerTransactionsComposite(customerName: string) {
+        let customerTransactionsComposite = this.compoundsIndexed[customerName];
         
-        if (!customerTransactionsManager) {
-            customerTransactionsManager = new CustomerTransactionsManager(
+        if (!customerTransactionsComposite) {
+            customerTransactionsComposite = new CustomerTransactionsComposite(
                 new CustomerEntity(null, customerName),
             )
             
             // add to indexed managers by customer name
-            this.customerTransactionsIndex[customerName] = customerTransactionsManager;
+            this.compoundsIndexed[customerName] = customerTransactionsComposite;
         }
         
-        return customerTransactionsManager
+        return customerTransactionsComposite
     }
     
     /*
@@ -161,7 +154,7 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
     * */
     private async associateDbIntoSellers() {
         
-        const customersNames = Object.keys(this.customerTransactionsIndex)
+        const customersNames = Object.keys(this.compoundsIndexed)
         await this.customersSource.createByUsername(customersNames)
         const customersFromDB: Array<ICustomer> = await this.customersSource.getByUsername(customersNames)
         
@@ -170,8 +163,8 @@ export class UploadService extends BaseService<UploadServiceSO, any>{
         const coursesFromDB: Array<ICourseModel> = await this.coursesSource.getByTitle(coursesTitles)
         
         for (let customerRow of customersFromDB) {
-            let customerTransactionsManager = this.getCustomerTransactionsManager(customerRow.name)
-            customerTransactionsManager.customer.id = customerRow.id
+            let customerTransactionsComposite = this.getCustomerTransactionsComposite(customerRow.name)
+            customerTransactionsComposite.customer.id = customerRow.id
         }
         
         for (let courseRow of coursesFromDB) {

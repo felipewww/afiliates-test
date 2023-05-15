@@ -1,10 +1,14 @@
 import {TransactionEntity} from "@/domain/entities/Transaction.entity";
 import {CustomerEntity} from "@/domain/entities/Customer.entity";
-
 import * as process from "process";
-import {ETransactionType} from "@/data/transactions.source";
+import {ETransactionType} from "../../../../common-types";
 
-export class CustomerTransactionsManager {
+/**
+ * Each Customer has many Transactions. The "CustomerTransactionsComposite" object
+ * stores all Transactions for a specific Customer
+ */
+export class CustomerTransactionsComposite {
+    
     private Transactions: Array<TransactionEntity> = []
     
     constructor(
@@ -18,8 +22,6 @@ export class CustomerTransactionsManager {
     }
     
     addTransaction(transaction: TransactionEntity) {
-        // this.log(transaction);
-        
         // When affiliate sell something (ETransactionType.SALE_AFFILIATE)
         // should not register credits change, just save this register in database
         if (
